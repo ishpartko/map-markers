@@ -1,8 +1,14 @@
 <template>
   <div class="app">
-    <CreateMapTree></CreateMapTree>
-    <template v-if="false">
-      <MapTree class="app-map-tree"></MapTree>
+    <template v-if="isEditPlaces">
+      <CreateMapTree></CreateMapTree>
+    </template>
+    <template v-else>
+      <MapTree class="app-map-tree">
+        <button @click="onClickEdit">
+          Задать точки
+        </button>
+      </MapTree>
       <Map class="app-map"></Map>
       <SavedMapTree class="saved-map-tree"></SavedMapTree>
     </template>
@@ -14,6 +20,7 @@ import CreateMapTree from "./components/CreateMapTree.vue";
 import Map from "./components/Map.vue";
 import MapTree from "./components/MapTree.vue";
 import SavedMapTree from "./components/SavedMapTree.vue";
+import {mapGetters } from 'vuex'
 
 export default {
   name: "app",
@@ -22,6 +29,29 @@ export default {
     MapTree,
     SavedMapTree,
     CreateMapTree
+  },
+  computed: {
+    ...mapGetters({
+      mapTree: 'mapTree'
+    }),
+    isEditPlaces() {
+      return this.isEdit 
+    }
+  },
+  data() {
+    return {
+      isEdit: true
+    }
+  },
+  methods: {
+    onClickEdit() {
+      this.isEdit = true
+    }
+  },
+  watch: {
+    mapTree() {
+      this.isEdit = false
+    }
   }
 };
 </script>
