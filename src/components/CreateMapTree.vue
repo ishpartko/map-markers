@@ -14,7 +14,7 @@ import Axios from 'axios'
 import { mapToken } from "@/config";
 import nanoid from 'nanoid'
 import "leaflet/dist/leaflet.css";
-import { get, merge } from 'lodash-es'
+import { get } from 'lodash-es'
 
 const defaults = {
   position: [51.505, -0.09],
@@ -92,10 +92,12 @@ export default {
                 children: [
                   {
                     title: get(context, '[1].text', 'Нет Области'),
-                    children: {
-                      title: get(context, '[2].text', 'Нет Города'),
-                      position: place.position
-                    }
+                    children: [
+                      {
+                        title: get(context, '[2].text', 'Нет Города'),
+                        position: place.position
+                      }
+                    ]
                   }
                 ]
               })
@@ -107,35 +109,53 @@ export default {
         Promise.all(allPromises).then((result)=> resolve(result))
       })
     },
+    isPlacesEqual(targetPlace, otherPlace) {
+      return targetPlace.title === otherPlace.title
+    },
+    placeIndexInPlacesArray(place ,array) {
+      return array.findIndex((value)=> this.isPlacesEqual(value, place))
+    },
     deepMerge(target, other) {
-      if(target.title === other.title) {
-        return {
-          title: target.title,
-          children: target.children.reduce((result, item)=> {
-            const index = result.findIndex((value)=> value.title === item.title)
-            if(index > -1){
+      if(this.isPlacesEqual(target, other)) {
+        const children = target.children.reduce((result, item)=> {
+            const index = this.placeIndexInPlacesArray(item, result)
+            if(index === -1){
+              return [...result, item]
+            } else {
               const outcome = [...result]
               const itm = result[index]
+
               outcome.splice(index, 1)
-              return [...outcome, merge(itm, item)]
-            } else {
-              return [...result, item]
+              const children = [...itm.children, ...item.children ]
+              return [...outcome, {
+                title: item.title,
+                children
+              }]
             }
           }, other.children)
+        return {
+          title: target.title,
+          children
         }
       }
-      return [target, other]
+      return false
     },
     mergePlaces(places) {
       return places.reduce((result, place)=> {
-        const index = result.findIndex((value)=> value.title === place.title)
+        const index = this.placeIndexInPlacesArray(place, result)
         if(index === -1) {
           return [...result, place]
         } else {
           const outcome = [...result]
           const item = result[index]
           outcome.splice(index, 1)
-          return [...outcome, this.deepMerge(item, place)]
+          const mergeResult = this.deepMerge(item, place)
+          console.log('mergeResult', mergeResult)
+          if(!mergeResult) {
+            return [...outcome, item, place]
+          } else {
+            return [...outcome, mergeResult]
+          }
         }
       }, [])
     },
