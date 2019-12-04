@@ -1,5 +1,7 @@
 <template>
-  <div></div>
+  <div>
+    Сохраненное дерево
+  </div>
 </template>
 
 <script>
