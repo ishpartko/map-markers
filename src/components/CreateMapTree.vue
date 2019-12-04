@@ -8,7 +8,6 @@
 </template>
 
 <script>
-/* eslint-disable no-console */
 import { tileLayer, map, marker } from "@/lib/leaflet";
 import Axios from 'axios'
 import { mapToken } from "@/config";
