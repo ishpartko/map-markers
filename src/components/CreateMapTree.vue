@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="map" ref="map"></div>
-    <button @click="saveAndEmit">
+    <button @click="onClickSave">
       Сохранить маркеры в дерево
     </button>
   </div>
@@ -159,11 +159,11 @@ export default {
         }
       }, [])
     },
-    saveAndEmit() {
+    onClickSave() {
       this.requestPlacesNames().then((placesWithContext)=> {
         console.log('placesWithContext',[...placesWithContext])
         const merged = this.mergePlaces(placesWithContext)
-        console.log(merged)
+        this.$store.commit('mapTree', merged)
       })
     }
   }
