@@ -150,7 +150,6 @@ export default {
           const item = result[index]
           outcome.splice(index, 1)
           const mergeResult = this.deepMerge(item, place)
-          console.log('mergeResult', mergeResult)
           if(!mergeResult) {
             return [...outcome, item, place]
           } else {
@@ -161,7 +160,6 @@ export default {
     },
     onClickSave() {
       this.requestPlacesNames().then((placesWithContext)=> {
-        console.log('placesWithContext',[...placesWithContext])
         const merged = this.mergePlaces(placesWithContext)
         this.$store.commit('mapTree', merged)
       })
