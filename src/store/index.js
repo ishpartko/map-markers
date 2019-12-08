@@ -26,6 +26,10 @@ export default new Vuex.Store({
       state.places = {
         ...state.places,
         ...pickedPlaces.reduce((result, pickedPlace)=> {
+          
+          // if already saved in right sidebar -- skip it
+          if(pickedPlace.isSaved) return result
+
           return { 
             ...result, 
             [pickedPlace.id]: {
