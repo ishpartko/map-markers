@@ -36,9 +36,9 @@ export default new Vuex.Store({
         }, {})
       }
     },
-    saveMapMarker(state, place) {
-      Vue.set(state.places, place.id, {
-        ...state.places[place.id],
+    saveMapMarker(state, {id}) {
+      Vue.set(state.places, id, {
+        ...state.places[id],
         isSaved: true,
         isShowOnMap: false,
       })

@@ -1,6 +1,5 @@
 <template>
   <div class="map-tree-wrapper">
-    <slot></slot>
     <ul v-if="tree" class="map-tree">
       <TreeListItem
         v-for="(place, key) in tree"

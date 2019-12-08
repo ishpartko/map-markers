@@ -4,7 +4,6 @@
     <button @click="onClickSave">
       Сохранить маркеры в дерево
     </button>
-    <slot></slot>
   </div>
 </template>
 

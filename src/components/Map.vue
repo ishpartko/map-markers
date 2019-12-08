@@ -14,22 +14,43 @@ import {
 } from '@/lib/leaflet'
 import { mapToken } from '@/config'
 import 'leaflet/dist/leaflet.css'
-import {has} from 'lodash-es'
+import {get, has} from 'lodash-es'
 import {defaultView} from '@/helpers/map'
 import { getPlaceContextFromFullApiContext } from '@/helpers/place'
+import {markersTypeNames} from '@/helpers/radio'
 
 export default {
+  props: {
+    markersType: {
+      type: [String, Number],
+      required: true,
+      validator(value) {
+        return Object.values(markersTypeNames).some((markersType) => {
+          return markersType.value === value
+        })
+      }
+    }
+  },
   data() {
     return {
       mainMap: null,
-      markerIdsOnMap: {}
+      markersOnMap: {}
     }
   },
   computed: {
     ...mapGetters({
       mapMarkers: 'mapMarkers',
       places: 'places'
-    })
+    }),
+    onSelectListeners() {
+      switch(this.markersType) {
+        case markersTypeNames.allowDrag.value:
+          return 'click'
+        case markersTypeNames.default.value:
+        default:
+          return 'mouseover click'
+      }
+    }
   },
   watch: {
     mapMarkers(newValue) {
@@ -37,6 +58,9 @@ export default {
       newValue.forEach(place => {
         this.addMarker(place)
       });
+    },
+    markersType(type) {
+      this.changeMarkersType(type)
     }
   },
   mounted() {
@@ -55,38 +79,60 @@ export default {
     }).addTo(this.mainMap);
   },
   methods: {
+    changeMarkerType(id) {
+      this.updateMarkerListeners({id})
+    },
+    changeMarkersType() {
+      Object.keys(this.markersOnMap).forEach((key)=> {
+        this.changeMarkerType(key)
+      })
+    },
+    deleteMarker({id}) {
+      this.mainMap.removeLayer(this.markersOnMap[id]);
+      Vue.delete(this.markersOnMap, id)
+    },
+    updateMarkerListeners({id}) {
+      this.markersOnMap[id].clearAllEventListeners()
+
+      this.markersOnMap[id].on(this.onSelectListeners, (event) => {
+        const id = get(event.target, 'options.id', null);
+        this.$store.commit('saveMapMarker', {id})
+        this.deleteMarker({id})
+      });
+      if(this.markersType === markersTypeNames.allowDrag.value) {
+        this.markersOnMap[id].on('dragend', (event)=> {
+          const marker = event.target;
+          const id = get(marker, 'options.id', null)
+          const position = marker.getLatLng();
+          marker.setLatLng(position, {id, draggable:'true'})
+          marker.bindPopup(position)
+          marker.update();
+          const updatedPlaceSync = {
+            ...this.places[id],
+            position
+          }
+          this.$store.dispatch('getPlaceContextFromApi', updatedPlaceSync).then((fullContext)=> {
+            const context = getPlaceContextFromFullApiContext(fullContext)
+            const updatedPlaceAsync = {
+              ...updatedPlaceSync,
+              context
+            }
+            this.$store.commit('updateSinglePlace', updatedPlaceAsync)
+          })
+        })
+      }
+    },
     addMarker(place) {
-      if(has(this.markerIdsOnMap, place.id)) return;
-      const markerConfig = {
+      if(has(this.markersOnMap, place.id)) return;
+
+      this.markersOnMap[place.id] = marker(place.position, {
         draggable:'true',
         id: place.id
-      }
-      this.markerIdsOnMap[place.id] = marker(place.position, markerConfig)
-      this.markerIdsOnMap[place.id].on('click', () => {
-        this.$store.commit('saveMapMarker', place)
-        this.mainMap.removeLayer(this.markerIdsOnMap[place.id]);
-        Vue.delete(this.markerIdsOnMap, place.id)
-      });
-      this.markerIdsOnMap[place.id].on('dragend', (event)=> {
-        const marker = event.target;
-        const position = marker.getLatLng();
-        marker.setLatLng(position, markerConfig)
-        marker.bindPopup(position)
-        marker.update();
-        const updatedPlaceSync = {
-          ...this.places[place.id],
-          position
-        }
-        this.$store.dispatch('getPlaceContextFromApi', updatedPlaceSync).then((fullContext)=> {
-          const context = getPlaceContextFromFullApiContext(fullContext)
-          const updatedPlaceAsync = {
-            ...updatedPlaceSync,
-            context
-          }
-          this.$store.commit('updateSinglePlace', updatedPlaceAsync)
-        })
       })
-      this.markerIdsOnMap[place.id].addTo(this.mainMap)
+      
+      this.updateMarkerListeners({id: place.id})
+      
+      this.markersOnMap[place.id].addTo(this.mainMap)
     }
   }
 }
