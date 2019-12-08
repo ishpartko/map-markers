@@ -31,6 +31,7 @@ import {
   readPlacesFromLocalStorage
 } from '@/helpers'
 import {markersTypeNames} from '@/helpers/radio'
+import {setFirstTimePlaceholderData} from "@/helpers/firstTimePlaceholderData";
 
 export default {
   name: "app",
@@ -53,6 +54,7 @@ export default {
     }
   },
   created() {
+    setFirstTimePlaceholderData()
     this.init()
   },
   methods: {
