@@ -1,10 +1,5 @@
 <template>
   <div class="app">
-    <MenuPanel
-      :is-map-edit="isEdit"
-      @on-toggle-edit="toggleEdit"
-      @on-change-markers-type="changeMarkersType"
-    ></MenuPanel>
     <template v-if="isEdit">
       <CreateMapTree @back="onClickBack"></CreateMapTree>
     </template>
@@ -16,6 +11,11 @@
       ></Map>
       <SavedMapTree class="saved-map-tree"></SavedMapTree>
     </template>
+    <MenuPanel
+      :is-map-edit="isEdit"
+      @on-toggle-edit="toggleEdit"
+      @on-change-markers-type="changeMarkersType"
+    ></MenuPanel>
   </div>
 </template>
 
@@ -89,7 +89,7 @@ export default {
 }
 
 .app-map {
-  height: 70vh;
+  height: 60vh;
 }
 
 @media (min-width: 700px) {
