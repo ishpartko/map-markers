@@ -90,7 +90,7 @@ export default {
   padding: 6px;
   background-color:red;
   color: white;
-  z-index: 10000;
+  z-index: 10000111111;
   bottom: 0;
   right: 0;
   left: unset;
