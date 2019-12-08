@@ -1,7 +1,11 @@
 <template>
   <div class="app">
-    <template v-if="isEditPlaces">
-      <CreateMapTree></CreateMapTree>
+    <template v-if="isShowEdit">
+      <CreateMapTree @back="onClickBack">
+        <button @click="onClickBack">
+          Вернуться к дереву
+        </button>
+      </CreateMapTree>
     </template>
     <template v-else>
       <MapTree class="app-map-tree">
@@ -21,6 +25,10 @@ import Map from "./components/Map.vue";
 import MapTree from "./components/MapTree.vue";
 import SavedMapTree from "./components/SavedMapTree.vue";
 import {mapGetters } from 'vuex'
+import {
+  writePlacesInLocalStorage,
+  readPlacesFromLocalStorage
+} from '@/helpers'
 
 export default {
   name: "app",
@@ -32,10 +40,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      mapTree: 'mapTree'
+      places: 'places'
     }),
-    isEditPlaces() {
-      return this.isEdit 
+    isShowEdit() {
+      return this.isEdit
     }
   },
   data() {
@@ -43,13 +51,27 @@ export default {
       isEdit: true
     }
   },
+  created() {
+    this.init()
+  },
   methods: {
+    init() {
+      const placesFromLocalStorage = readPlacesFromLocalStorage()
+      if(placesFromLocalStorage) {
+        this.$store.commit('places', placesFromLocalStorage)
+      }
+      this.isEdit = Object.keys(this.places).length === 0
+    },
     onClickEdit() {
       this.isEdit = true
+    },
+    onClickBack() {
+      writePlacesInLocalStorage(this.places)
+      this.isEdit = false
     }
   },
   watch: {
-    mapTree() {
+    places() {
       this.isEdit = false
     }
   }
@@ -67,10 +89,6 @@ export default {
 }
 
 @media (min-width: 700px) {
-  :root {
-    --tree-width: 400px;
-  }
-
   .app {
     display: flex;
     justify-content: space-between;
@@ -79,17 +97,29 @@ export default {
   }
 
   .app-map-tree {
-    flex-grow: 1;
+    flex-grow: 2;
     flex-basis: var(--tree-width);
   }
 
   .app-map {
-    flex-grow: 2;
+    flex-grow: 7;
+    height: 100vh;
   }
 
   .saved-map-tree {
-    flex-grow: 1;
+    flex-grow: 2;
     flex-basis: var(--tree-width);
   }
+}
+</style>
+
+<style>
+:root {
+  --tree-width: 600px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
 }
 </style>
