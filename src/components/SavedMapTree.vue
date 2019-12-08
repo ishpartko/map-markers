@@ -1,5 +1,8 @@
 <template>
   <ul>
+    <li v-if="savedPlaces.length === 0">
+      Нет сохранённых мест
+    </li>
     <li 
       v-for="place in savedPlaces" 
       :key="place.id"
