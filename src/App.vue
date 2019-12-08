@@ -94,6 +94,11 @@ export default {
   height: 60vh;
 }
 
+.saved-map-tree {
+  max-height: 100vh;
+  overflow-y: scroll;
+}
+
 @media (min-width: 700px) {
   .app {
     display: flex;
@@ -115,6 +120,8 @@ export default {
   .saved-map-tree {
     flex-grow: 2;
     flex-basis: var(--tree-width);
+    max-height: auto;
+    overflow-y: auto;
   }
 }
 </style>
