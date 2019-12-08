@@ -1,5 +1,10 @@
 <template>
-  <div class="menu-panel-wrapper">
+  <div 
+    class="menu-panel-wrapper"
+    :class="{
+      'menu-panel-wrapper_active': isShowMenu
+    }"
+  >
     <button 
       @click="isShowMenu = !isShowMenu"
     >
@@ -88,8 +93,12 @@ export default {
   z-index: 10000;
   bottom: 0;
   right: 0;
-  left: 0;
+  left: unset;
   position: sticky;
+}
+
+.menu-panel-wrapper_active {
+  left: 0;
 }
 
 .menu-panel {
