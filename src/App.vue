@@ -5,10 +5,7 @@
     </template>
     <template v-else>
       <MapTree class="app-map-tree"></MapTree>
-      <Map
-        :markers-type="markersType"
-        class="app-map"
-      ></Map>
+      <Map :markers-type="markersType" class="app-map"></Map>
       <SavedMapTree class="saved-map-tree"></SavedMapTree>
     </template>
     <MenuPanel
@@ -25,16 +22,16 @@ import Map from "./components/Map.vue";
 import MapTree from "./components/MapTree.vue";
 import SavedMapTree from "./components/SavedMapTree.vue";
 import MenuPanel from "./components/MenuPanel.vue";
-import {mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 import {
   writePlacesInLocalStorage,
   readPlacesFromLocalStorage
-} from '@/helpers'
-import {markersTypeNames} from '@/helpers/radio'
-import {setFirstTimePlaceholderData} from "@/helpers/firstTimePlaceholderData";
+} from "@/helpers";
+import { markersTypeNames } from "@/helpers/radio";
+import { setFirstTimePlaceholderData } from "@/helpers/firstTimePlaceholderData";
 
 export default {
-  name: "app",
+  name: "App",
   components: {
     Map,
     MapTree,
@@ -42,43 +39,43 @@ export default {
     CreateMapTree,
     MenuPanel
   },
-  computed: {
-    ...mapGetters({
-      places: 'places'
-    }),
-  },
   data() {
     return {
       isEdit: true,
-      markersType: markersTypeNames.default.value,
-    }
+      markersType: markersTypeNames.default.value
+    };
   },
-  created() {
-    setFirstTimePlaceholderData()
-    this.init()
-  },
-  methods: {
-    init() {
-      const placesFromLocalStorage = readPlacesFromLocalStorage()
-      if(placesFromLocalStorage) {
-        this.$store.commit('places', placesFromLocalStorage)
-      }
-      this.isEdit = Object.keys(this.places).length === 0
-    },
-    onClickBack() {
-      writePlacesInLocalStorage(this.places)
-      this.isEdit = false
-    },
-    toggleEdit() {
-      this.isEdit = !this.isEdit
-    },
-    changeMarkersType(value) {
-      this.markersType = value
-    }
+  computed: {
+    ...mapGetters({
+      places: "places"
+    })
   },
   watch: {
     places() {
-      this.isEdit = false
+      this.isEdit = false;
+    }
+  },
+  created() {
+    setFirstTimePlaceholderData();
+    this.init();
+  },
+  methods: {
+    init() {
+      const placesFromLocalStorage = readPlacesFromLocalStorage();
+      if (placesFromLocalStorage) {
+        this.$store.commit("places", placesFromLocalStorage);
+      }
+      this.isEdit = Object.keys(this.places).length === 0;
+    },
+    onClickBack() {
+      writePlacesInLocalStorage(this.places);
+      this.isEdit = false;
+    },
+    toggleEdit() {
+      this.isEdit = !this.isEdit;
+    },
+    changeMarkersType(value) {
+      this.markersType = value;
     }
   }
 };

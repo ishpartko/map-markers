@@ -1,22 +1,17 @@
 <template>
-  <li 
-    class="tree-list-item" 
-    v-if="place"
-    @click.stop="onSelected(place)"
-  >
-    <span 
+  <li v-if="place" class="tree-list-item" @click.stop="onSelected(place)">
+    <span
       :class="{
         'tree-list-item_selected': isNeedToHightlight
       }"
       class="tree-list-item-title"
     >
-      {{placeTitle}}
+      {{ placeTitle }}
     </span>
-    <ul
-      v-if="place.children"
-    >
-      <TreeListItem 
-        v-for="(childPlace, key) in place.children" :key="key"
+    <ul v-if="place.children">
+      <TreeListItem
+        v-for="(childPlace, key) in place.children"
+        :key="key"
         :place="childPlace"
         @selected="onSelected"
       />
@@ -25,45 +20,49 @@
 </template>
 
 <script>
-import { Place } from '@/models'
-import { get } from 'lodash-es'
+import { Place } from "@/models";
+import { get } from "lodash-es";
 
 export default {
-  name: 'TreeListItem',
+  name: "TreeListItem",
   props: {
     place: {
       type: Object,
       required: true,
       validator(value) {
-        return Place.isValid(value)
+        return Place.isValid(value);
       }
     }
   },
   computed: {
     placeTitle() {
-      return get(this.place, 'title', false) || get(this.place, 'context[2]', false)
+      return (
+        get(this.place, "title", false) || get(this.place, "context[2]", false)
+      );
     },
     isNeedToHightlight() {
-      return get(this.place, 'isSaved', false) || get(this.place, 'isShowOnMap', false)
+      return (
+        get(this.place, "isSaved", false) ||
+        get(this.place, "isShowOnMap", false)
+      );
     }
   },
   methods: {
     onSelected(treeItem) {
-      this.$emit('selected', treeItem)
+      this.$emit("selected", treeItem);
     }
   }
-}
+};
 </script>
 
 <style scoped>
-  .tree-list-item {
-    padding: 5px 10px;
-    border: 1px solid #000;
-    cursor: pointer;
-  }
+.tree-list-item {
+  padding: 5px 10px;
+  border: 1px solid #000;
+  cursor: pointer;
+}
 
-  .tree-list-item_selected {
-    background-color: rgba(255, 179, 0, 0.66);
-  }
-
+.tree-list-item_selected {
+  background-color: rgba(255, 179, 0, 0.66);
+}
 </style>

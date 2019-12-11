@@ -60,7 +60,7 @@ export default {
     },
     createTreeFromPlaces(places) {
       return Object.values(places).reduce((result, place) => {
-        const treeItem = this.createTreeItem({...place});
+        const treeItem = this.createTreeItem({ ...place });
         return merge(treeItem, result);
       }, {});
     }

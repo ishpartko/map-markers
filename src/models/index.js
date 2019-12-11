@@ -1,5 +1,3 @@
-import { Place } from './Place'
+import { Place } from "./Place";
 
-export {
-  Place
-}
+export { Place };

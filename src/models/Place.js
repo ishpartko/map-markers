@@ -1,15 +1,15 @@
 export class Place {
   static isValid(value) {
-    let isValid = true
-    if(this.hasChildren(value)) {
-      isValid = this.isChildrenValid(value.children)
+    let isValid = true;
+    if (this.hasChildren(value)) {
+      isValid = this.isChildrenValid(value.children);
     }
-    return value.hasOwnProperty('title') && isValid
+    return value.hasOwnProperty("title") && isValid;
   }
   static hasChildren(place) {
-    return place.hasOwnProperty('children')
+    return place.hasOwnProperty("children");
   }
   static isChildrenValid(children) {
-    return typeof(children) === 'object'
+    return typeof children === "object";
   }
 }

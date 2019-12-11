@@ -1,49 +1,35 @@
 <template>
-  <div 
+  <div
     class="menu-panel-wrapper"
     :class="{
       'menu-panel-wrapper_active': isShowMenu
     }"
   >
-    <button 
-      @click="isShowMenu = !isShowMenu"
-    >
+    <button @click="isShowMenu = !isShowMenu">
       Показать/Спрятать меню
     </button>
-    <section 
-    v-if="isShowMenu" 
-    class="menu-panel"
-    >
-      <button @click="toggleEdit"
-        class="menu-panel-controll menu-panel-button"
-      >
-        {{editButtonText}}
+    <section v-if="isShowMenu" class="menu-panel">
+      <button class="menu-panel-controll menu-panel-button" @click="toggleEdit">
+        {{ editButtonText }}
       </button>
-      <span 
-        v-if="!isMapEdit"
-        class="menu-panel-controll"
-      >
+      <span v-if="!isMapEdit" class="menu-panel-controll">
         Управление маркерами:
-        <select 
-          class="menu-panel-controll-select"
-          v-model="markersType"
-        >
-          <option 
+        <select v-model="markersType" class="menu-panel-controll-select">
+          <option
             v-for="(markersTypesName, key) in markersTypeNames"
             :key="key"
             :value="markersTypesName.value"
           >
-            {{markersTypesName.title}}
+            {{ markersTypesName.title }}
           </option>
         </select>
       </span>
     </section>
   </div>
-  
 </template>
 
 <script>
-import {markersTypeNames} from '@/helpers/radio'
+import { markersTypeNames } from "@/helpers/radio";
 
 export default {
   props: {
@@ -55,32 +41,32 @@ export default {
   data() {
     return {
       markersTypeData: markersTypeNames.default.value,
-      isShowMenu: false,
-    }
-  },  
+      isShowMenu: false
+    };
+  },
   computed: {
     markersTypeNames() {
-      return markersTypeNames
+      return markersTypeNames;
     },
     editButtonText() {
-      return this.isMapEdit ? 'Вернуться к дереву' : 'Задать точки' 
+      return this.isMapEdit ? "Вернуться к дереву" : "Задать точки";
     },
     markersType: {
       get() {
-        return this.markersTypeData
+        return this.markersTypeData;
       },
       set(value) {
-        this.markersTypeData = value
-        this.$emit('on-change-markers-type', value)
+        this.markersTypeData = value;
+        this.$emit("on-change-markers-type", value);
       }
     }
   },
   methods: {
     toggleEdit() {
-      this.$emit('on-toggle-edit')
+      this.$emit("on-toggle-edit");
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -88,7 +74,7 @@ export default {
   border-radius: 27px;
   font-size: 12px;
   padding: 6px;
-  background-color:red;
+  background-color: red;
   color: white;
   z-index: 10000111111;
   bottom: 0;
@@ -133,10 +119,8 @@ export default {
 
 @media (min-width: 700px) {
   .menu-panel-wrapper {
-    position: fixed;  
+    position: fixed;
     flex-direction: row;
   }
 }
-
-
 </style>
