@@ -2,7 +2,7 @@
 
 ## Demo
 
-https://ishpartko.github.io/tag-game/
+https://ishpartko.github.io/map-markers/
 
 ## Project setup
 ```
