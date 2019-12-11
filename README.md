@@ -1,5 +1,9 @@
 # map-markers
 
+## Demo
+
+https://ishpartko.github.io/tag-game/
+
 ## Project setup
 ```
 yarn install
